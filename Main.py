@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-image = cv2.imread("test_easy2.jpeg", cv2.IMREAD_COLOR)
+image = cv2.imread("test_easy.jpg", cv2.IMREAD_COLOR)
 output = image.copy()
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1.2, 100)
