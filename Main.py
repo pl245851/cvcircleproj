@@ -84,10 +84,11 @@ if(pertran != "yes"):
 		cv2.circle(output, (maxx, maxy), maxr, (0, 165, 255), 4)
 		cv2.rectangle(output, (maxx - 5, maxy - 5), (maxx + 5, maxy + 5), (50, 50, 50), -1)
 	# show the output image
-else:
 
+else:
+	#from https://stackoverflow.com/questions/60062044/finding-the-corners-of-a-rectangle
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	gray = 255 - gray
+	#gray = 255 - gray
 
 	# blur image
 	blur = cv2.GaussianBlur(gray, (3, 3), 0)
@@ -139,5 +140,5 @@ else:
 	cv2.imshow("BBOX", rot_bbox)
 	cv2.waitKey(0)
 
-#	cv2.imshow("output", np.hstack([image, output]))
-#	cv2.waitKey(0)
+	cv2.imshow("output", np.hstack([image, output]))
+	cv2.waitKey(0)
