@@ -90,10 +90,9 @@ else:
 	height, width, channels = image.shape
 	pts = np.array(eval("[(10,10),(600,19),(600,600),(100,600)]"), dtype="float32")
 	output = four_point_transform(image, pts)
-	cv2.imshow("output", output)
-	cv2.waitKey(0)
 
-	pts = np.array(eval("[(0,0),(0,533),(800,533),(800,0)]"), dtype="float32")
+	pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(height, width, height, width)
+	pts = np.array(eval(pts1), dtype="float32")
 	output = four_point_transform(image, pts)
 
 
