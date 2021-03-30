@@ -88,12 +88,37 @@ if(pertran != "yes"):
 
 else:
 	height, width, channels = image.shape
-	pts = np.array(eval("[(10,10),(600,19),(600,600),(100,600)]"), dtype="float32")
-	output = four_point_transform(image, pts)
+	pts = np.array(eval("[(10,10),(600,19),(800,800),(100,600)]"), dtype="float32")
+	image2 = four_point_transform(image, pts)
+
+	gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+	blur = cv2.GaussianBlur(gray, (5, 5), 0)
+	circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1.2, 100)
+	# ensure at least some circles were found
+	if circles is not None:
+		# convert the (x, y) coordinates and radius of the circles to integers
+		circles = np.round(circles[0, :]).astype("int")
+		# loop over the (x, y) coordinates and radius of the circles
+		maxx = 0
+		maxy = 0
+		maxr = 0
+		for (x, y, r) in circles:
+			print(x, y, r)
+			if r > maxr:
+				maxx = x
+				maxy = y
+				maxr = r
+		# draw the circle in the output image, then draw a rectangle
+		# corresponding to the center of the circle
+		output = four_point_transform(output, pts)
+		cv2.circle(output, (maxx, maxy), maxr, (0, 165, 255), 4)
+		cv2.rectangle(output, (maxx - 5, maxy - 5), (maxx + 5, maxy + 5), (50, 50, 50), -1)
+	# show the output image
+	cv2.imwrite("temp.jpeg", output)
 
 	pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(height, width, height, width)
 	pts = np.array(eval(pts1), dtype="float32")
-	output = four_point_transform(image, pts)
+	output = four_point_transform(output, pts)
 
 
 cv2.imshow("output", np.hstack([image, output]))
