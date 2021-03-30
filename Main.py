@@ -61,6 +61,7 @@ im = input("image file name\n")
 pertran = input("change perspective\n")
 image = cv2.imread(im, cv2.IMREAD_COLOR)
 output = image.copy()
+print(image.shape)
 if(pertran != "yes"):
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	blur = cv2.GaussianBlur(gray,(5,5),0)
@@ -86,59 +87,15 @@ if(pertran != "yes"):
 	# show the output image
 
 else:
-	#from https://stackoverflow.com/questions/60062044/finding-the-corners-of-a-rectangle
-	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	#gray = 255 - gray
-
-	# blur image
-	blur = cv2.GaussianBlur(gray, (3, 3), 0)
-
-	# do adaptive threshold on gray image
-	thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 75, 2)
-	thresh = 255 - thresh
-
-	# apply morphology
-	kernel = np.ones((5, 5), np.uint8)
-	rect = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-	rect = cv2.morphologyEx(rect, cv2.MORPH_CLOSE, kernel)
-
-	# thin
-	kernel = np.ones((5, 5), np.uint8)
-	rect = cv2.morphologyEx(rect, cv2.MORPH_ERODE, kernel)
-
-	# get largest contour
-	contours = cv2.findContours(rect, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	contours = contours[0] if len(contours) == 2 else contours[1]
-	for c in contours:
-		area_thresh = 0
-		area = cv2.contourArea(c)
-		if area > area_thresh:
-			area = area_thresh
-			big_contour = c
-
-	# get rotated rectangle from contour
-	rot_rect = cv2.minAreaRect(big_contour)
-	box = cv2.boxPoints(rot_rect)
-	box = np.int0(box)
-	for p in box:
-		pt = (p[0], p[1])
-		print(pt)
-
-	# draw rotated rectangle on copy of img
-	rot_bbox = image.copy()
-	cv2.drawContours(rot_bbox, [box], 0, (0, 0, 255), 2)
-
-	# write img with red rotated bounding box to disk
-	#cv2.imwrite("rectangle_thresh.png", thresh)
-	#cv2.imwrite("rectangle_outline.png", rect)
-	#cv2.imwrite("rectangle_bounds.png", rot_bbox)
-
-	# display it
-	#cv2.imshow("IMAGE", image)
-	#cv2.imshow("THRESHOLD", thresh)
-	cv2.imshow("RECT", rect)
-	cv2.imshow("BBOX", rot_bbox)
+	height, width, channels = image.shape
+	pts = np.array(eval("[(10,10),(600,19),(600,600),(100,600)]"), dtype="float32")
+	output = four_point_transform(image, pts)
+	cv2.imshow("output", output)
 	cv2.waitKey(0)
 
-	cv2.imshow("output", np.hstack([image, output]))
-	cv2.waitKey(0)
+	pts = np.array(eval("[(0,0),(0,533),(800,533),(800,0)]"), dtype="float32")
+	output = four_point_transform(image, pts)
+
+
+cv2.imshow("output", np.hstack([image, output]))
+cv2.waitKey(0)
