@@ -88,8 +88,17 @@ if(pertran != "yes"):
 
 else:
 	height, width, channels = image.shape
-	pts = np.array(eval("[(10,10),(600,19),(800,800),(100,600)]"), dtype="float32")
+	#for x in range(300, height,10):
+		#for y in range(500, width,10):
+	ptsstring = "[(0,0),(0,{}),({},{}),({},0)]".format(height,440,800,width)
+	pts = np.array(eval(ptsstring), dtype="float32")
 	image2 = four_point_transform(image, pts)
+	cv2.imshow("output", image2)
+		#	print(x,y)
+		#	cv2.waitKey(10)
+		#	cv2.destroyAllWindows()
+	cv2.waitKey(0)
+
 
 	gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
 	blur = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -110,15 +119,20 @@ else:
 				maxr = r
 		# draw the circle in the output image, then draw a rectangle
 		# corresponding to the center of the circle
-		output = four_point_transform(output, pts)
-		cv2.circle(output, (maxx, maxy), maxr, (0, 165, 255), 4)
-		cv2.rectangle(output, (maxx - 5, maxy - 5), (maxx + 5, maxy + 5), (50, 50, 50), -1)
+		#output = four_point_transform(output, pts)
+		blank_image = np.zeros((height, width, 3), np.uint8)
+		blank_image = four_point_transform(blank_image, pts)
+		cv2.circle(blank_image, (maxx, maxy), maxr, (0, 165, 255), 4)
+		cv2.rectangle(blank_image, (maxx - 5, maxy - 5), (maxx + 5, maxy + 5), (50, 50, 50), -1)
+	#cv2.imshow("output", np.hstack([blank_image, output]))
+	#cv2.waitKey(0)
 	# show the output image
-	cv2.imwrite("temp.jpeg", output)
+	#cv2.imwrite("temp.jpeg", output)
 
-	pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(height, width, height, width)
-	pts = np.array(eval(pts1), dtype="float32")
-	output = four_point_transform(output, pts)
+		pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(height, width, height, width)
+		pts = np.array(eval(pts1), dtype="float32")
+		blank_image = four_point_transform(blank_image, pts)
+		output = cv2.add(blank_image, output)
 
 
 cv2.imshow("output", np.hstack([image, output]))
