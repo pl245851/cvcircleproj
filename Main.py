@@ -49,11 +49,12 @@ def four_point_transform(image, pts):
 
 
 im = input("image file name\n")
-pertran = input("change perspective\n")
+#pertran = input("change perspective\n")
 image = cv2.imread(im, cv2.IMREAD_COLOR)
 output = image.copy()
+height, width, channels = image.shape
 print(image.shape)
-if(pertran != "yes"):
+if(height != 533 and width != 800):
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	blur = cv2.GaussianBlur(gray,(5,5),0)
 	circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1.2, 100)
@@ -78,65 +79,69 @@ if(pertran != "yes"):
 	# show the output image
 
 else:
-	height, width, channels = image.shape
-	#for x in range(300, height,10):
-		#for y in range(500, width,10):
+	#for x in range(200, height*2,10):
+	#	for y in range(1150, 1160,10):
+	#		print(x,y)
 	#while True:
-		#x = input("x")
-		#y = input("y")
-	#cv2.destroyAllWindows()
-	ptsstring = "[(0,0),(0,{}),({},{}),({},0)]".format(270,width,height,1320)
-	pts = np.array(eval(ptsstring), dtype="float32")
-	image2 = four_point_transform(image, pts)
-	#cv2.imshow("output", image2)
-		#	print(x,y)
-		#	cv2.waitKey(10)
-	#cv2.waitKey(0)
+		#x = input("x")#270
+		#y = input("y")#1320
+			cv2.destroyAllWindows()
+			ptsstring = "[(0,0),(0,{}),({},{}),({},0)]".format(450,width,height,460)
+			pts = np.array(eval(ptsstring), dtype="float32")
+			image2 = four_point_transform(image, pts)
+			#cv2.imshow("output", image2)
+				#	print(x,y)
+				#	cv2.waitKey(10)
+			#cv2.waitKey(0)
 
+			gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+			blur = cv2.GaussianBlur(gray, (5, 5), 0)
+			#cv2.imshow("output", blur)
+			circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1.2, 100)
+			# ensure at least some circles were found
+			blank_image = np.zeros((height, width, 3), np.uint8)
+			blank_image = four_point_transform(blank_image, pts)
+			if circles is not None:
+				# convert the (x, y) coordinates and radius of the circles to integers
+				circles = np.round(circles[0, :]).astype("int")
+				# loop over the (x, y) coordinates and radius of the circles
+				maxx = 0
+				maxy = 0
+				maxr = 0
+				for (x2, y2, r) in circles:
+					#print(x, y, r)
+					if r > maxr:
+						maxx = x2
+						maxy = y2
+						maxr = r
+				# draw the circle in the output image, then draw a rectangle
+				# corresponding to the center of the circle
+				blank_image = four_point_transform(blank_image, pts)
 
-
-	gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
-	blur = cv2.GaussianBlur(gray, (5, 5), 0)
-	cv2.imshow("output", blur)
-	circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1.2, 100)
-	# ensure at least some circles were found
-	blank_image = np.zeros((height, width, 3), np.uint8)
-	blank_image = four_point_transform(blank_image, pts)
-	if circles is not None:
-		# convert the (x, y) coordinates and radius of the circles to integers
-		circles = np.round(circles[0, :]).astype("int")
-		# loop over the (x, y) coordinates and radius of the circles
-		maxx = 0
-		maxy = 0
-		maxr = 0
-		for (x, y, r) in circles:
-			#print(x, y, r)
-			if r > maxr:
-				maxx = x
-				maxy = y
-				maxr = r
-		# draw the circle in the output image, then draw a rectangle
-		# corresponding to the center of the circle
-		#output = four_point_transform(output, pts)
-
-		#cv2.imshow("blank", blank_image)
-		cv2.circle(blur, (maxx, maxy), maxr, (0, 165, 255), 4)
-		cv2.rectangle(blur, (maxx - 5, maxy - 5), (maxx + 5, maxy + 5), (50, 50, 50), -1)
-		cv2.imshow("circle", blur)
-	#cv2.imshow("output", np.hstack([blank_image, output]))
-	#cv2.waitKey(0)
+				#cv2.imshow("blank", blank_image)
+				cv2.circle(blank_image, (maxx, maxy), maxr, (0, 165, 255), 4)
+				cv2.rectangle(blank_image, (maxx - 5, maxy - 5), (maxx + 5, maxy + 5), (50, 50, 50), -1)
+				#cv2.imshow("circle", blur)
+				#cv2.imwrite("{}_{}.jpeg".format(x,y), blur)
+			#cv2.imshow("output", np.hstack([blank_image, output]))
+				cv2.waitKey(0)
 	# show the output image
 	#cv2.imwrite("temp.jpeg", output)
 
-		pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(1000, width, height, 900)
-		pts = np.array(eval(pts1), dtype="float32")
-		blank_image = four_point_transform(blank_image, pts)
-		#cv2.imshow(" ", blank_image)
-		cv2.waitKey(0)
-		cv2.imshow("circletilt", blank_image)
-		output = cv2.add(blank_image, output)
+			pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(533, width, height, 800)
+			pts = np.array(eval(pts1), dtype="float32")
+			cv2.imshow(" ", blank_image)
+			#print(pts)
+			#inv_trans = np.array(np.linalg.inv(pts), dtype="float32")
+			#print(inv_trans)
+			blank_image = four_point_transform(blank_image, pts)
+			print(blank_image.shape)
 
-cv2.imshow("image2", image2)
-cv2.imshow("circle", blank_image)
+			cv2.waitKey(0)
+			cv2.imshow("circletilt", blank_image)
+			output = cv2.add(blank_image, output)
+
+#cv2.imshow("image2", image2)
+#cv2.imshow("circle", blank_image)
 cv2.imshow("output", np.hstack([image, output]))
 cv2.waitKey(0)
