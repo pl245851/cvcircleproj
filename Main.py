@@ -86,7 +86,7 @@ else:
 		#x = input("x")#270
 		#y = input("y")#1320
 			cv2.destroyAllWindows()
-			ptsstring = "[(0,0),(0,{}),({},{}),({},0)]".format(733,width,height,700)
+			ptsstring = "[(0,0),(0,{}),({},{}),({},0)]".format(400,width,height,1330)
 			pts = np.array(eval(ptsstring), dtype="float32")
 			pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(533, 800, 533, 800)
 			pts2 = np.array(eval(pts1), dtype="float32")
