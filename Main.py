@@ -86,9 +86,14 @@ else:
 		#x = input("x")#270
 		#y = input("y")#1320
 			cv2.destroyAllWindows()
-			ptsstring = "[(0,0),(0,{}),({},{}),({},0)]".format(450,width,height,460)
+			ptsstring = "[(0,0),(0,{}),({},{}),({},0)]".format(733,width,height,700)
 			pts = np.array(eval(ptsstring), dtype="float32")
+			pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(533, 800, 533, 800)
+			pts2 = np.array(eval(pts1), dtype="float32")
 			image2 = four_point_transform(image, pts)
+			#image2 = four_point_transform(image2, pts2)
+#			image2 = four_point_transform(image2, pts)
+
 			#cv2.imshow("output", image2)
 				#	print(x,y)
 				#	cv2.waitKey(10)
@@ -124,21 +129,21 @@ else:
 				#cv2.imshow("circle", blur)
 				#cv2.imwrite("{}_{}.jpeg".format(x,y), blur)
 			#cv2.imshow("output", np.hstack([blank_image, output]))
-				cv2.waitKey(0)
+				#cv2.waitKey(0)
 	# show the output image
 	#cv2.imwrite("temp.jpeg", output)
 
-			pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(533, width, height, 800)
-			pts = np.array(eval(pts1), dtype="float32")
-			cv2.imshow(" ", blank_image)
+#			pts1 = "[(0,0),(0,{}),({},{}),({},0)]".format(533, 800, 533, 800)
+#			pts2 = np.array(eval(pts1), dtype="float32")
+			#cv2.imshow(" ", blank_image)
 			#print(pts)
 			#inv_trans = np.array(np.linalg.inv(pts), dtype="float32")
 			#print(inv_trans)
-			blank_image = four_point_transform(blank_image, pts)
+			blank_image = four_point_transform(blank_image, pts2)
 			print(blank_image.shape)
 
 			cv2.waitKey(0)
-			cv2.imshow("circletilt", blank_image)
+			#cv2.imshow("circletilt", blank_image)
 			output = cv2.add(blank_image, output)
 
 #cv2.imshow("image2", image2)
